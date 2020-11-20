@@ -11,10 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet Filter implementation class filter1
- */
 @WebFilter("/login")
 public class filter1 implements Filter {
 
@@ -28,14 +26,25 @@ public class filter1 implements Filter {
 		PrintWriter pw=response.getWriter();
 		HttpServletRequest req=(HttpServletRequest) request;
 		int pass=Integer.parseInt(req.getParameter("userPassword"));
-		if(pass<10000)
-			chain.doFilter(request, response);
+		String user=req.getParameter("userName");
+		if(user.startsWith("employee")||user.equals("admin"))
+			{
+				if(user.startsWith("employee")&&pass==1234)	
+					((HttpServletResponse) response).sendRedirect("employee.html");
+					//chain.doFilter(request, response);
+				else
+					pw.println("<h1>It is not a user login</h1>");
+					//((HttpServletResponse) response).sendRedirect("employee.html");
+				if(user.equals("admin")&&pass==1234)
+					((HttpServletResponse) response).sendRedirect("admin.html");
+				//chain.doFilter(request, response);
+				else
+					pw.println("<h1>It is not a admin login</h1>");
+		
+			}
 		else
-			pw.println("<h1>Please enter the password within the range 10000</h1>");
-	}
-
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
+			pw.println("<h1 style=\"margin-top: 240px;text-align: center;color:red;font-size:60px;\">User Unauthorized...</h1>");
+			
 	}
 
 }
